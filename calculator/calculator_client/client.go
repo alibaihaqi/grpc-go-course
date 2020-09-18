@@ -36,5 +36,5 @@ func doUnaryCall(c calculatorpb.CalculatorServiceClient) {
 	if err != nil {
 		log.Fatalf("error while calling Sum RPC: %v", err)
 	}
-	log.Printf("Response from Sum: %v", res)
+	log.Printf("Response from Sum: %v", res.SumNumber)
 }
