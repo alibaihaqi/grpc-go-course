@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"time"
 
 	"github.com/alibaihaqi/grpc-go-course/calculator/calculatorpb"
 
@@ -23,7 +24,8 @@ func main() {
 	c := calculatorpb.NewCalculatorServiceClient(cc)
 
 	// doUnaryCall(c)           // RPC unary call
-	doServerStreamingCall(c) // RPC server streaming call
+	// doServerStreamingCall(c) // RPC server streaming call
+	doClientStreamingCall(c) // RPC client streaming call
 }
 
 func doUnaryCall(c calculatorpb.CalculatorServiceClient) {
@@ -63,4 +65,30 @@ func doServerStreamingCall(c calculatorpb.CalculatorServiceClient) {
 		}
 		log.Printf("Response from PrimeNumberDecomposition: %v", msg.GetResultNumber())
 	}
+}
+
+func doClientStreamingCall(c calculatorpb.CalculatorServiceClient) {
+	fmt.Println("Starting to do a Client Streaming RPC ComputeAverage service")
+
+	stream, err := c.ComputeAverage(context.Background())
+	if err != nil {
+		log.Fatalf("error while calling ComputeAverage: %v", err)
+	}
+
+	numbers := []int32{3, 5, 9, 54, 23}
+
+	// we iterate over our slice and send each message individually
+	for _, number := range numbers {
+		fmt.Printf("Sending request: %v\n", number)
+		stream.Send(&calculatorpb.ComputeAverageRequest{
+			Number: number,
+		})
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatalf("error while receiving response from ComputeAverage: %v", err)
+	}
+	fmt.Printf("ComputeAverage response: %v\n", res.GetAverageNumber())
 }
