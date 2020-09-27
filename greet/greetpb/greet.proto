@@ -36,6 +36,14 @@ message LongGreetResponse {
     string result = 1;
 }
 
+message GreetEveryoneRequest {
+    Greeting greeting = 1;
+}
+
+message GreetEveryoneResponse {
+    string result = 1;
+}
+
 service GreetService {
     // Unary RPC call
     rpc Greet(GreetRequest) returns (GreetResponse) {};
@@ -45,4 +53,7 @@ service GreetService {
 
     // Client Streaming RPC Call
     rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
+
+    // Bi-Directional RPC Call
+    rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
 }
