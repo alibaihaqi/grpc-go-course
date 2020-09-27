@@ -26,7 +26,8 @@ func main() {
 
 	// doCreateBlogCall(c)
 	// doReadBlogCall(c)
-	doUpdateBlogCall(c)
+	// doUpdateBlogCall(c)
+	doDeleteBlogCall(c)
 }
 
 func doCreateBlogCall(c blogpb.BlogServiceClient) {
@@ -59,7 +60,7 @@ func doUpdateBlogCall(c blogpb.BlogServiceClient) {
 	fmt.Println("Do Update Blog")
 
 	updateBlog := &blogpb.Blog{
-		Id:       "5f70d349b2ce160f6c829f61",
+		Id:       "fake-id",
 		AuthorId: "Changed Author",
 		Title:    "My First Updated Title",
 		Content:  "My First Updated Content",
@@ -72,4 +73,15 @@ func doUpdateBlogCall(c blogpb.BlogServiceClient) {
 		log.Fatalf("Unexpected error: %v\n", err)
 	}
 	fmt.Printf("Got the updated blog: %v\n", res)
+}
+
+func doDeleteBlogCall(c blogpb.BlogServiceClient) {
+	fmt.Println("Do Delete Blog")
+	res, err := c.DeleteBlog(context.Background(), &blogpb.DeleteBlogRequest{
+		BlogId: "5f70d3a1b2ce160f6c829f62",
+	})
+	if err != nil {
+		log.Fatalf("Unexpected error: %v\n", err)
+	}
+	fmt.Printf("Success delete blog with id: %v\n", res)
 }
