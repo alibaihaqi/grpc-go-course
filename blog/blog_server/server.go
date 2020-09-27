@@ -9,11 +9,12 @@ import (
 	"os/signal"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"github.com/alibaihaqi/grpc-go-course/blog/blogpb"
-	"github.com/globalsign/mgo/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -25,7 +26,7 @@ var collection *mongo.Collection
 type server struct{}
 
 func (*server) CreateBlog(ctx context.Context, req *blogpb.CreateBlogRequest) (*blogpb.CreateBlogResponse, error) {
-	fmt.Printf("CreateBlog function was invoked with %v\n", req)
+	fmt.Printf("CreateBlog request %v\n", req)
 
 	blog := req.GetBlog()
 
@@ -41,7 +42,7 @@ func (*server) CreateBlog(ctx context.Context, req *blogpb.CreateBlogRequest) (*
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Internal error: %v", err))
 	}
 
-	oid, ok := res.InsertedID.(bson.ObjectId)
+	oid, ok := res.InsertedID.(primitive.ObjectID)
 
 	if !ok {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Cannot convert to OID: %v", err))
@@ -57,10 +58,10 @@ func (*server) CreateBlog(ctx context.Context, req *blogpb.CreateBlogRequest) (*
 }
 
 type blogItem struct {
-	ID       bson.ObjectId `bson:"_id,omitempty"`
-	AuthorID string        `bson:"author_ud"`
-	Title    string        `bson:"title"`
-	Content  string        `bson:"content"`
+	ID       primitive.ObjectID `bson:"_id,omitempty"`
+	AuthorID string             `bson:"author_ud"`
+	Title    string             `bson:"title"`
+	Content  string             `bson:"content"`
 }
 
 func main() {
