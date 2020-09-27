@@ -9,6 +9,8 @@ import (
 	"net"
 	"time"
 
+	"google.golang.org/grpc/reflection"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -143,6 +145,9 @@ func main() {
 
 	s := grpc.NewServer()
 	calculatorpb.RegisterCalculatorServiceServer(s, &server{})
+
+	// Register reflection service on gRPC server.
+	reflection.Register(s)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to server: %v", err)
