@@ -36,11 +36,21 @@ message LongGreetResponse {
     string result = 1;
 }
 
+// BiDirectional Streaming Message
 message GreetEveryoneRequest {
     Greeting greeting = 1;
 }
 
 message GreetEveryoneResponse {
+    string result = 1;
+}
+
+// Unary With Deadline Message
+message GreetWithDeadlineRequest {
+    Greeting greeting = 1;
+}
+
+message GreetWithDeadlineResponse {
     string result = 1;
 }
 
@@ -56,4 +66,7 @@ service GreetService {
 
     // Bi-Directional RPC Call
     rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
+
+    // Unary With Deadline
+    rpc GreetWithDeadline(GreetWithDeadlineRequest) returns (GreetWithDeadlineResponse) {};
 }
