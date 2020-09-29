@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 
 	"github.com/alibaihaqi/grpc-go-course/blog/blogpb"
@@ -27,7 +28,8 @@ func main() {
 	// doCreateBlogCall(c)
 	// doReadBlogCall(c)
 	// doUpdateBlogCall(c)
-	doDeleteBlogCall(c)
+	// doDeleteBlogCall(c)
+	doListBlogCall(c)
 }
 
 func doCreateBlogCall(c blogpb.BlogServiceClient) {
@@ -78,10 +80,29 @@ func doUpdateBlogCall(c blogpb.BlogServiceClient) {
 func doDeleteBlogCall(c blogpb.BlogServiceClient) {
 	fmt.Println("Do Delete Blog")
 	res, err := c.DeleteBlog(context.Background(), &blogpb.DeleteBlogRequest{
-		BlogId: "5f70d3a1b2ce160f6c829f62",
+		BlogId: "fake-id",
 	})
 	if err != nil {
 		log.Fatalf("Unexpected error: %v\n", err)
 	}
 	fmt.Printf("Success delete blog with id: %v\n", res)
+}
+
+func doListBlogCall(c blogpb.BlogServiceClient) {
+	fmt.Println("Do List Blog")
+	resStream, err := c.ListBlog(context.Background(), &blogpb.ListBlogRequest{})
+	if err != nil {
+		log.Fatalf("Unexpected error: %v\n", err)
+	}
+	for {
+		msg, err := resStream.Recv()
+		if err == io.EOF {
+			// we've reached the end of the stream
+			break
+		}
+		if err != nil {
+			log.Fatalf("error while reading stream: %v", err)
+		}
+		log.Printf("Response from ListBlogCall: %v", msg.GetBlog())
+	}
 }

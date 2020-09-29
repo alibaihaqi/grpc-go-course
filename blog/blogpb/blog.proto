@@ -47,6 +47,11 @@ message DeleteBlogResponse {
 }
 
 // List Blog
+message ListBlogRequest {}
+
+message ListBlogResponse {
+    Blog blog = 1;
+}
 
 service BlogService {
 
@@ -57,4 +62,6 @@ service BlogService {
     rpc UpdateBlog(UpdateBlogRequest) returns (UpdateBlogResponse) {};  // return NOT_FOUND if not found
 
     rpc DeleteBlog(DeleteBlogRequest) returns (DeleteBlogResponse) {}; // return NOT_FOUND if not found
+
+    rpc ListBlog(ListBlogRequest) returns (stream ListBlogResponse) {};
 }
